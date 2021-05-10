@@ -1,0 +1,18 @@
+---
+- name: End to end smoke tests
+  hosts: app_servers
+  become: false
+  gather_facts: false
+  tags:
+    - smoketest  
+  tasks:
+ 
+    - name: Check webserver for correct response
+      uri:
+        url: "http://frontend1.cb96.internal/ping"
+        return_content: yes
+      until: '"alive" in result.content'
+      retries: 10
+      delay: 1
+      register: result
+      delegate_to: localhost
